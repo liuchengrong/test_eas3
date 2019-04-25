@@ -1,5 +1,6 @@
 {
     "require": {
-        "easyswoole/easyswoole": "3.1.18"
+        "easyswoole/easyswoole": "3.1.18",
+        "easyswoole/mysqli": "^1.1"
     }
 }

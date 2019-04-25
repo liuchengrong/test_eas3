@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "314b317c6d326bacb8014d67f614f6bd",
+    "content-hash": "36c26bd902409846e142ce25b952d6b5",
     "packages": [
         {
             "name": "dragonmantank/cron-expression",
@@ -366,6 +366,52 @@
                 "swoole"
             ],
             "time": "2019-03-25T13:26:32+00:00"
+        },
+        {
+            "name": "easyswoole/mysqli",
+            "version": "1.1.15",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/easy-swoole/mysqli.git",
+                "reference": "5bb0a956cc43198de2b2a850059b2036360d0f14"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/easy-swoole/mysqli/zipball/5bb0a956cc43198de2b2a850059b2036360d0f14",
+                "reference": "5bb0a956cc43198de2b2a850059b2036360d0f14",
+                "shasum": ""
+            },
+            "require": {
+                "easyswoole/spl": "^1.0"
+            },
+            "require-dev": {
+                "easyswoole/swoole-ide-helper": "^1.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "EasySwoole\\Mysqli\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "YF",
+                    "email": "291323003@qq.com"
+                }
+            ],
+            "description": "An efficient swoole framework",
+            "homepage": "https://www.easyswoole.com/",
+            "keywords": [
+                "async",
+                "easyswoole",
+                "framework",
+                "swoole"
+            ],
+            "time": "2019-03-21T03:50:25+00:00"
         },
         {
             "name": "easyswoole/socket",
