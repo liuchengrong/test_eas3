@@ -36,8 +36,8 @@ class EasySwooleEvent implements Event
         // TODO: Implement mainServerCreate() method.
         $register->add($register::onWorkerStart, function (\swoole_server $server, int $workerId) {
             if ($server->taskworker == false) {
-                PoolManager::getInstance()->getPool(MysqlPool::class)->preLoad(1);
-                PoolManager::getInstance()->getPool(RedisPool::class)->preLoad(2);
+//                PoolManager::getInstance()->getPool(MysqlPool::class)->preLoad(1);
+//                PoolManager::getInstance()->getPool(RedisPool::class)->preLoad(2);
             }
             if($workerId >= $server->setting['worker_num']) {
                 swoole_set_process_name("php-test-es3  {$workerId} task worker");
