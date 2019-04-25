@@ -38,6 +38,7 @@ class EasySwooleEvent implements Event
             if ($server->taskworker == false) {
 //                PoolManager::getInstance()->getPool(MysqlPool::class)->preLoad(1);
 //                PoolManager::getInstance()->getPool(RedisPool::class)->preLoad(2);
+                PoolManager::getInstance()->getPool(MysqlPool::class)->preLoad(1);
             }
             if($workerId >= $server->setting['worker_num']) {
                 swoole_set_process_name("php-test-es3  {$workerId} task worker");
