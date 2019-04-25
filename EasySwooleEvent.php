@@ -54,7 +54,7 @@ class EasySwooleEvent implements Event
 //            }
             if ($workerId == 1) {
 
-                Timer::getInstance()->loop(1000, function () {
+                Timer::getInstance()->loop(5 * 1000, function () {
                     TaskManager::async(function () {
                         echo "执行异步任务...\n";
                         return true;
