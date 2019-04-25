@@ -44,7 +44,7 @@ return [
         'timeout'       => '5',
         'charset'       => 'utf8mb4',
         'password'      => 'root',
-        'database'      => 'jdqs-yy0409',
+        'database'      => 'yxdzwxr',
         'prefix'        => 'game_',
         'POOL_MAX_NUM'  => '20',
         'POOL_TIME_OUT' => '0.1',

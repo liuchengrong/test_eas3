@@ -9,9 +9,12 @@
 namespace EasySwoole\EasySwoole;
 
 
+use App\Model\Member\GameMemberModel;
+use App\Utility\Pool\MysqlObject;
 use App\Utility\Pool\MysqlPool;
 use App\Utility\Pool\RedisPool;
 use EasySwoole\Component\Pool\PoolManager;
+use EasySwoole\Component\Timer;
 use EasySwoole\EasySwoole\Swoole\EventRegister;
 use EasySwoole\EasySwoole\AbstractInterface\Event;
 use EasySwoole\Http\Request;
@@ -32,6 +35,35 @@ class EasySwooleEvent implements Event
     public static function mainServerCreate(EventRegister $register)
     {
         // TODO: Implement mainServerCreate() method.
+        ################### mysql 热启动   #######################
+        $register->add($register::onWorkerStart, function (\swoole_server $server, int $workerId) {
+            if ($server->taskworker == false) {
+                //每个worker进程都预创建连接
+                PoolManager::getInstance()->getPool(MysqlPool::class)->preLoad(5);//最小创建数量
+            }
+            if ($workerId == 1){
+                Timer::getInstance()->loop(5 * 1000,function (){
+                    for ($i=0;$i<1000;$i++){
+                        $indata = [
+                            'nickname'=> 'a'.$i,
+                            'icon_url'=> 'https://www.test.wn/a'.$i.'.png',
+                            'account'=> 'a'.$i,
+                            'password'=> md5('a'.$i),
+                            'status'=> 1,
+                            'created_at'=> time(),
+                            'updated_at'=> time(),
+                        ];
+                        MysqlPool::invoke(function (MysqlObject $db) use ($indata){
+                            $gmember = new GameMemberModel($db);
+                            $ret = $gmember->inster($indata);
+                            echo $ret;echo "\n";
+                        });
+                    }
+                });
+            }
+
+        });
+
     }
 
     public static function onRequest(Request $request, Response $response): bool
