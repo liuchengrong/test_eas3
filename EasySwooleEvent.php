@@ -9,8 +9,8 @@
 namespace EasySwoole\EasySwoole;
 
 
-use App\Infrastructure\Utility\Pool\MysqlPool;
-use App\Infrastructure\Utility\Pool\RedisPool;
+use App\Utility\Pool\MysqlPool;
+use App\Utility\Pool\RedisPool;
 use EasySwoole\Component\Pool\PoolManager;
 use EasySwoole\Component\Timer;
 use EasySwoole\EasySwoole\Swoole\EventRegister;
