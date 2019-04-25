@@ -9,6 +9,9 @@
 namespace EasySwoole\EasySwoole;
 
 
+use App\Infrastructure\Utility\Pool\MysqlPool;
+use App\Infrastructure\Utility\Pool\RedisPool;
+use EasySwoole\Component\Pool\PoolManager;
 use EasySwoole\Component\Timer;
 use EasySwoole\EasySwoole\Swoole\EventRegister;
 use EasySwoole\EasySwoole\AbstractInterface\Event;
@@ -23,12 +26,19 @@ class EasySwooleEvent implements Event
     {
         // TODO: Implement initialize() method.
         date_default_timezone_set('Asia/Shanghai');
+        //协程池
+        PoolManager::getInstance()->register(MysqlPool::class, Config::getInstance()->getConf('MYSQL.POOL_MAX_NUM'));//mysql
+        PoolManager::getInstance()->register(RedisPool::class, Config::getInstance()->getConf('REDIS.POOL_MAX_NUM'));//redis
     }
 
     public static function mainServerCreate(EventRegister $register)
     {
         // TODO: Implement mainServerCreate() method.
         $register->add(EventRegister::onWorkerStart, function (\swoole_server $server, $workerId) {
+            if ($server->taskworker == false) {
+                PoolManager::getInstance()->getPool(MysqlPool::class)->preLoad(1);
+                PoolManager::getInstance()->getPool(RedisPool::class)->preLoad(2);
+            }
             if($workerId >= $server->setting['worker_num']) {
                 swoole_set_process_name("php-test-es3  {$workerId} task worker");
             } else {
@@ -52,19 +62,22 @@ class EasySwooleEvent implements Event
 //                    });
 //                });
 //            }
-            if ($workerId == 1) {
+//            if ($workerId == 1) {
+//
+//                Timer::getInstance()->loop(5 * 1000, function () {
+//                    TaskManager::async(function () {
+//                        echo "执行异步任务...\n";
+//                        return true;
+//                    }, function () {
+//                        echo "异步任务执行完毕...\n";
+//                    });
+//                    echo 'aaaaaaaaaa';echo time();echo "\n";
+//                });
+//            }
 
-                Timer::getInstance()->loop(5 * 1000, function () {
-                    TaskManager::async(function () {
-                        echo "执行异步任务...\n";
-                        return true;
-                    }, function () {
-                        echo "异步任务执行完毕...\n";
-                    });
-                    echo 'aaaaaaaaaa';echo time();echo "\n";
-                });
-            }
+            Timer::getInstance()->loop(1000, function () {
 
+            });
         });
     }
 
