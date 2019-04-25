@@ -6,7 +6,7 @@
  * Time: 10:11
  */
 
-namespace App\Infrastructure\Utility\Pool;
+namespace App\Utility\Pool;
 
 use EasySwoole\Component\Pool\AbstractPool;
 use EasySwoole\EasySwoole\Config;

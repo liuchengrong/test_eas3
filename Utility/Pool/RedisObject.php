@@ -6,7 +6,7 @@
  * Time: 10:13
  */
 
-namespace App\Infrastructure\Utility\Pool;
+namespace App\Utility\Pool;
 
 use EasySwoole\Component\Pool\PoolObjectInterface;
 use Swoole\Coroutine\Redis;
