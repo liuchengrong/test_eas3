@@ -43,11 +43,11 @@ class EasySwooleEvent implements Event
                     // 例如:2秒后一个任务，3秒后一个任务 代码如下
                     Timer::getInstance()->loop(2 * 1000, function () {
                         //为了防止因为任务阻塞，引起定时器不准确，把任务给异步进程处理
-                        echo 'bbbbb';echo "\n";
+                        echo 'bbbbb';echo time();echo "\n";
                     });
                     Timer::getInstance()->after(3 * 1000, function () {
                         //为了防止因为任务阻塞，引起定时器不准确，把任务给异步进程处理
-                        echo 'ccccc';echo "\n";
+                        echo 'ccccc';echo time();echo "\n";
                     });
                 });
             }
