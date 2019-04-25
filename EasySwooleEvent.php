@@ -34,7 +34,7 @@ class EasySwooleEvent implements Event
     public static function mainServerCreate(EventRegister $register)
     {
         // TODO: Implement mainServerCreate() method.
-        $register->add(EventRegister::onWorkerStart, function (\swoole_server $server, $workerId) {
+        $register->add($register::onWorkerStart, function (\swoole_server $server, int $workerId) {
             if ($server->taskworker == false) {
                 PoolManager::getInstance()->getPool(MysqlPool::class)->preLoad(1);
                 PoolManager::getInstance()->getPool(RedisPool::class)->preLoad(2);
