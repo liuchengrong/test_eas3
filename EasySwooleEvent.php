@@ -28,6 +28,11 @@ class EasySwooleEvent implements Event
     {
         // TODO: Implement mainServerCreate() method.
         $register->add(EventRegister::onWorkerStart, function (\swoole_server $server, $workerId) {
+            if($workerId >= $server->setting['worker_num']) {
+                swoole_set_process_name("php-test-es3  {$workerId} task worker");
+            } else {
+                swoole_set_process_name("php-test-es3 {$workerId} event worker");
+            }
             //如何避免定时器因为进程重启而丢失
             //例如在第一个进程 添加一个10秒的定时器
             if ($workerId == 0) {
