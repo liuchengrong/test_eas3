@@ -40,10 +40,10 @@ class EasySwooleEvent implements Event
         $register->add($register::onWorkerStart, function (\swoole_server $server, int $workerId) {
             if ($server->taskworker == false) {
                 //每个worker进程都预创建连接
-                PoolManager::getInstance()->getPool(MysqlPool::class)->preLoad(5);//最小创建数量
+                PoolManager::getInstance()->getPool(MysqlPool::class)->preLoad(10);//最小创建数量
             }
-            if ($workerId == 1){
-                //每秒钟运行一次循环  开启一次异步任务   实现100万条记录插入  估计只需要半小时
+            //if ($workerId == 1){
+                //每秒钟运行一次循环  开启一次异步任务   实现100万条记录插入  估计只需要几分钟
                 Timer::getInstance()->loop(1 * 1000,function (){
                     for ($i = 0;$i < 100;$i++){
                         $indata = [
@@ -61,7 +61,7 @@ class EasySwooleEvent implements Event
                             return $ret;
                         });
                         echo $ret;echo "\n";
-                        if ($ret>1000000){
+                        if ($ret>2000000){
                             Timer::getInstance()->clearAll();
                             break;
                         }
@@ -82,7 +82,7 @@ class EasySwooleEvent implements Event
                                     return $ret;
                                 });
                                 echo 'a'.$ret;echo "\n";
-                                if ($ret > 1000000) {
+                                if ($ret > 2000000) {
                                     Timer::getInstance()->clearAll();
                                     break;
                                 }
@@ -92,7 +92,7 @@ class EasySwooleEvent implements Event
                     }
 
                 });
-            }
+           // }
 
         });
 
