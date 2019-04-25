@@ -44,7 +44,7 @@ class EasySwooleEvent implements Event
             }
             if ($workerId == 1){
                 Timer::getInstance()->loop(1 * 1000,function (){
-                    for ($i=0;$i<100;$i++){
+                    for ($i = 0;$i < 100;$i++){
                         $indata = [
                             'nickname'=> 'a'.$i,
                             'icon_url'=> 'https://www.test.wn/a'.$i.'.png',
@@ -66,9 +66,8 @@ class EasySwooleEvent implements Event
                             break;
                         }
 
-
                         TaskManager::async(function (){
-                            for ($o=0;$o<100;$o++){
+                            for ($o = 0;$o < 100;$o++){
                                 $indata = [
                                     'nickname'=> 'a'.$o,
                                     'icon_url'=> 'https://www.test.wn/a'.$o.'.png',
@@ -83,7 +82,7 @@ class EasySwooleEvent implements Event
                                     $ret = $gmember->inster($indata);
                                     return $ret;
                                 });
-                                echo 'aa'.$ret;echo "\n";
+                                echo 'a'.$ret;echo "\n";
                                 if ($ret > 300000) {
                                     Timer::getInstance()->clearAll();
                                     break;
