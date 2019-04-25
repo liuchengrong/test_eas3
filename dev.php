@@ -19,6 +19,8 @@ return [
             'max_request' => 5000,
             'task_worker_num' => 8,
             'task_max_request' => 1000,
+            'enable_coroutine' => true,
+            'task_enable_coroutine' => true,
         ],
     ],
     'TEMP_DIR' => null,

@@ -17,6 +17,7 @@ use EasySwoole\Component\Pool\PoolManager;
 use EasySwoole\Component\Timer;
 use EasySwoole\EasySwoole\Swoole\EventRegister;
 use EasySwoole\EasySwoole\AbstractInterface\Event;
+use EasySwoole\EasySwoole\Swoole\Task\TaskManager;
 use EasySwoole\Http\Request;
 use EasySwoole\Http\Response;
 
@@ -42,8 +43,8 @@ class EasySwooleEvent implements Event
                 PoolManager::getInstance()->getPool(MysqlPool::class)->preLoad(5);//最小创建数量
             }
             if ($workerId == 1){
-                Timer::getInstance()->loop(5 * 1000,function (){
-                    for ($i=0;$i<1000;$i++){
+                Timer::getInstance()->loop(1 * 1000,function (){
+                    for ($i=0;$i<100;$i++){
                         $indata = [
                             'nickname'=> 'a'.$i,
                             'icon_url'=> 'https://www.test.wn/a'.$i.'.png',
@@ -53,11 +54,43 @@ class EasySwooleEvent implements Event
                             'created_at'=> time(),
                             'updated_at'=> time(),
                         ];
-                        MysqlPool::invoke(function (MysqlObject $db) use ($indata){
+                        $ret = MysqlPool::invoke(function (MysqlObject $db) use ($indata){
                             $gmember = new GameMemberModel($db);
                             $ret = $gmember->inster($indata);
-                            echo $ret;echo "\n";
+                            return $ret;
                         });
+                        echo $ret;echo "\n";
+
+                        if ($ret>300000){
+                            Timer::getInstance()->clearAll();
+                            break;
+                        }
+
+
+                        TaskManager::async(function (){
+                            for ($o=0;$o<100;$o++){
+                                $indata = [
+                                    'nickname'=> 'a'.$o,
+                                    'icon_url'=> 'https://www.test.wn/a'.$o.'.png',
+                                    'account'=> 'a'.$o,
+                                    'password'=> md5('a'.$o),
+                                    'status'=> 1,
+                                    'created_at'=> time(),
+                                    'updated_at'=> time(),
+                                ];
+                                $ret = MysqlPool::invoke(function (MysqlObject $db) use ($indata){
+                                    $gmember = new GameMemberModel($db);
+                                    $ret = $gmember->inster($indata);
+                                    return $ret;
+                                });
+                                echo 'aa'.$ret;echo "\n";
+                                if ($ret > 300000) {
+                                    Timer::getInstance()->clearAll();
+                                    break;
+                                }
+                            }
+                        });
+
                     }
                 });
             }
