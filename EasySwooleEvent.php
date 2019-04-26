@@ -50,56 +50,56 @@ class EasySwooleEvent implements Event
                 swoole_set_process_name("php-test {$workerId} event worker");
             }
 
-            if ($workerId < 0){
-                //每秒钟运行一次循环  开启一次异步任务   实现100万条记录插入  估计只需要几分钟
-                Timer::getInstance()->loop(30 * 1000,function (){
-                    for ($i = 0;$i < 100;$i++){
-                        $indata = [
-                            'nickname'=> 'a'.$i,
-                            'avatar'=> 'https://www.test.wn/a'.$i.'.png',
-                            'openid'=> 'a'.$i,
-                            'status'=> 1,
-                            'created_at'=> time(),
-                            'updated_at'=> time(),
-                        ];
-                        $ret = MysqlPool::invoke(function (MysqlObject $db) use ($indata){
-                            $gmember = new GameMemberModel($db);
-                            $ret = $gmember->inster($indata);
-                            return $ret;
-                        });
-                        echo $ret;echo "\n";
-                        if ($ret>2000000){
-                            Timer::getInstance()->clearAll();
-                            break;
-                        }
-                        TaskManager::async(function (){
-                            for ($o = 0;$o < 100;$o++){
-                                $indata = [
-                                    'nickname'=> 'a'.$o,
-                                    'avatar'=> 'https://www.test.wn/a'.$o.'.png',
-                                    'openid'=> 'a'.$o,
-                                    'status'=> 1,
-                                    'created_at'=> time(),
-                                    'updated_at'=> time(),
-                                ];
-                                $ret = MysqlPool::invoke(function (MysqlObject $db) use ($indata){
-                                    $gmember = new GameMemberModel($db);
-                                    $ret = $gmember->inster($indata);
-                                    return $ret;
-                                });
-                                echo 'a'.$ret;echo "\n";
-                                if ($ret > 2000000) {
-                                    Timer::getInstance()->clearAll();
-                                    break;
-                                }
-                            }
-                        });
-
-                    }
-
-                });
-            };
-            if ($workerId > 7){
+//            if ($workerId < 0){
+//                //每秒钟运行一次循环  开启一次异步任务   实现100万条记录插入  估计只需要几分钟
+//                Timer::getInstance()->loop(30 * 1000,function (){
+//                    for ($i = 0;$i < 100;$i++){
+//                        $indata = [
+//                            'nickname'=> 'a'.$i,
+//                            'avatar'=> 'https://www.test.wn/a'.$i.'.png',
+//                            'openid'=> 'a'.$i,
+//                            'status'=> 1,
+//                            'created_at'=> time(),
+//                            'updated_at'=> time(),
+//                        ];
+//                        $ret = MysqlPool::invoke(function (MysqlObject $db) use ($indata){
+//                            $gmember = new GameMemberModel($db);
+//                            $ret = $gmember->inster($indata);
+//                            return $ret;
+//                        });
+//                        echo $ret;echo "\n";
+//                        if ($ret>2000000){
+//                            Timer::getInstance()->clearAll();
+//                            break;
+//                        }
+//                        TaskManager::async(function (){
+//                            for ($o = 0;$o < 100;$o++){
+//                                $indata = [
+//                                    'nickname'=> 'a'.$o,
+//                                    'avatar'=> 'https://www.test.wn/a'.$o.'.png',
+//                                    'openid'=> 'a'.$o,
+//                                    'status'=> 1,
+//                                    'created_at'=> time(),
+//                                    'updated_at'=> time(),
+//                                ];
+//                                $ret = MysqlPool::invoke(function (MysqlObject $db) use ($indata){
+//                                    $gmember = new GameMemberModel($db);
+//                                    $ret = $gmember->inster($indata);
+//                                    return $ret;
+//                                });
+//                                echo 'a'.$ret;echo "\n";
+//                                if ($ret > 2000000) {
+//                                    Timer::getInstance()->clearAll();
+//                                    break;
+//                                }
+//                            }
+//                        });
+//
+//                    }
+//
+//                });
+//            };
+            if ($workerId < 8){
                 Timer::getInstance()->loop(30 * 1000,function (){
                     $ret = MysqlPool::invoke(function (MysqlObject $db){
                         $gmember = new GameMemberModel($db);
