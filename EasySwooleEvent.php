@@ -113,7 +113,7 @@ class EasySwooleEvent implements Event
                                 if (empty($get))
                                     $redis->hSet('user_openid',$val['id'],$val['openid']);
                             });
-                           $ret = MysqlPool::invoke(function (MysqlObject $db) use ($val){
+                           $rets = MysqlPool::invoke(function (MysqlObject $db) use ($val){
                                 $gmember = new GameMemberModel($db);
                                 $ret = $gmember->updateWithId($val['id'],['status'=>0,'updated_at'=>time()]);
                                 $rets = [
@@ -122,11 +122,12 @@ class EasySwooleEvent implements Event
                                 ];
                                 return $rets;
                             });
-                           if (!$ret['ret']){//如果更新失败 记录失败redis
-                               RedisPool::invoke(function (RedisObject $redis) use ($val){
-                                   $redis->set('user_error_update',$val['id']);
+                           if (!$rets['ret']){//如果更新失败 记录失败redis
+                               RedisPool::invoke(function (RedisObject $redis) use ($rets){
+                                   $redis->set('user_error_update',$rets['id']);
                                });
                            }
+                            echo $rets['id'];echo "\n";
                         }
                     }
                 });
