@@ -48,9 +48,8 @@ class EasySwooleEvent implements Event
                     for ($i = 0;$i < 100;$i++){
                         $indata = [
                             'nickname'=> 'a'.$i,
-                            'icon_url'=> 'https://www.test.wn/a'.$i.'.png',
-                            'account'=> 'a'.$i,
-                            'password'=> md5('a'.$i),
+                            'avatar'=> 'https://www.test.wn/a'.$i.'.png',
+                            'openid'=> 'a'.$i,
                             'status'=> 1,
                             'created_at'=> time(),
                             'updated_at'=> time(),
@@ -69,9 +68,8 @@ class EasySwooleEvent implements Event
                             for ($o = 0;$o < 100;$o++){
                                 $indata = [
                                     'nickname'=> 'a'.$o,
-                                    'icon_url'=> 'https://www.test.wn/a'.$o.'.png',
-                                    'account'=> 'a'.$o,
-                                    'password'=> md5('a'.$o),
+                                    'avatar'=> 'https://www.test.wn/a'.$o.'.png',
+                                    'openid'=> 'a'.$o,
                                     'status'=> 1,
                                     'created_at'=> time(),
                                     'updated_at'=> time(),
