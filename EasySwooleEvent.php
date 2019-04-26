@@ -44,8 +44,8 @@ class EasySwooleEvent implements Event
             }
             if ($workerId < 8){
                 //每秒钟运行一次循环  开启一次异步任务   实现100万条记录插入  估计只需要几分钟
-                Timer::getInstance()->loop(2 * 1000,function (){
-                    for ($i = 0;$i < 50;$i++){
+                Timer::getInstance()->loop(60 * 1000,function (){
+                    for ($i = 0;$i < 100;$i++){
                         $indata = [
                             'nickname'=> 'a'.$i,
                             'avatar'=> 'https://www.test.wn/a'.$i.'.png',
@@ -65,7 +65,7 @@ class EasySwooleEvent implements Event
                             break;
                         }
                         TaskManager::async(function (){
-                            for ($o = 0;$o < 50;$o++){
+                            for ($o = 0;$o < 100;$o++){
                                 $indata = [
                                     'nickname'=> 'a'.$o,
                                     'avatar'=> 'https://www.test.wn/a'.$o.'.png',
