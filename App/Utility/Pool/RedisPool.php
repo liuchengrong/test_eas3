@@ -23,6 +23,9 @@ class RedisPool extends AbstractPool
             if(!empty($conf['auth'])){
                 $redis->auth($conf['auth']);
             }
+            if(isset($conf['select'])){
+                $redis->select($conf['select']);
+            }
             return $redis;
         }else{
             return null;

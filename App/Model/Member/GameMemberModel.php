@@ -64,4 +64,11 @@ class GameMemberModel extends BaseModel
     function inster($data){
         return $this->getDb()->insert($this->table,$data);
     }
+    function selectAll($sum = 100){
+        return  $this->getDb()->where('status',1)->get($this->table,$sum);
+    }
+    function updateWithId($id, $data)
+    {
+        return $this->getDb()->where('id',$id)->update($this->table,$data);
+    }
 }

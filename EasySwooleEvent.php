@@ -12,6 +12,7 @@ namespace EasySwoole\EasySwoole;
 use App\Model\Member\GameMemberModel;
 use App\Utility\Pool\MysqlObject;
 use App\Utility\Pool\MysqlPool;
+use App\Utility\Pool\RedisObject;
 use App\Utility\Pool\RedisPool;
 use EasySwoole\Component\Pool\PoolManager;
 use EasySwoole\Component\Timer;
@@ -41,8 +42,15 @@ class EasySwooleEvent implements Event
             if ($server->taskworker == false) {
                 //每个worker进程都预创建连接
                 PoolManager::getInstance()->getPool(MysqlPool::class)->preLoad(10);//最小创建数量
+                PoolManager::getInstance()->getPool(RedisPool::class)->preLoad(10);//最小创建数量
             }
-            if ($workerId < 8){
+            if($workerId >= $server->setting['worker_num']) {
+                swoole_set_process_name("php-test  {$workerId} task worker");
+            } else {
+                swoole_set_process_name("php-test {$workerId} event worker");
+            }
+
+            if ($workerId < 0){
                 //每秒钟运行一次循环  开启一次异步任务   实现100万条记录插入  估计只需要几分钟
                 Timer::getInstance()->loop(30 * 1000,function (){
                     for ($i = 0;$i < 100;$i++){
@@ -89,6 +97,38 @@ class EasySwooleEvent implements Event
 
                     }
 
+                });
+            };
+            if ($workerId > 7){
+                Timer::getInstance()->loop(20 * 1000,function (){
+                    $ret = MysqlPool::invoke(function (MysqlObject $db){
+                        $gmember = new GameMemberModel($db);
+                        $ret = $gmember->selectAll();
+                        return $ret;
+                    });
+                    if (!empty($ret)){//每个进程抽出100条  8个进程就抽出了800条  每30秒处理一次
+                        foreach ($ret as $val){
+                            RedisPool::invoke(function (RedisObject $redis) use ($val){
+                                $get = $redis->hGet('user_openid',$val['id']);
+                                if (empty($get))
+                                    $redis->hSet('user_openid',$val['id'],$val['openid']);
+                            });
+                           $ret = MysqlPool::invoke(function (MysqlObject $db) use ($val){
+                                $gmember = new GameMemberModel($db);
+                                $ret = $gmember->updateWithId($val['id'],['status'=>0,'updated_at'=>time()]);
+                                $rets = [
+                                    'ret' => empty($ret)?0:$ret,
+                                    'id' => $val['id']
+                                ];
+                                return $rets;
+                            });
+                           if (!$ret['ret']){//如果更新失败 记录失败redis
+                               RedisPool::invoke(function (RedisObject $redis) use ($val){
+                                   $redis->set('user_error_update',$val['id']);
+                               });
+                           }
+                        }
+                    }
                 });
             }
 
