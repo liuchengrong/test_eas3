@@ -42,7 +42,7 @@ class EasySwooleEvent implements Event
                 //每个worker进程都预创建连接
                 PoolManager::getInstance()->getPool(MysqlPool::class)->preLoad(10);//最小创建数量
             }
-            if ($workerId < 8){
+            if ($workerId <= 8){
                 //每秒钟运行一次循环  开启一次异步任务   实现100万条记录插入  估计只需要几分钟
                 Timer::getInstance()->loop(30 * 1000,function (){
                     for ($i = 0;$i < 100;$i++){
