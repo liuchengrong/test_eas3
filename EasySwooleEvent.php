@@ -100,7 +100,7 @@ class EasySwooleEvent implements Event
                 });
             };
             if ($workerId > 7){
-                Timer::getInstance()->loop(5 * 1000,function (){
+                Timer::getInstance()->loop(1 * 1000,function (){
                     $ret = MysqlPool::invoke(function (MysqlObject $db){
                         $gmember = new GameMemberModel($db);
                         $ret = $gmember->selectAll(1000);
