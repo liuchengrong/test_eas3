@@ -50,6 +50,7 @@ class EasySwooleEvent implements Event
                 swoole_set_process_name("php-test {$workerId} event worker");
             }
 
+
 //            if ($workerId < 0){
 //                //每秒钟运行一次循环  开启一次异步任务   实现100万条记录插入  估计只需要几分钟
 //                Timer::getInstance()->loop(30 * 1000,function (){
