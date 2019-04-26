@@ -100,10 +100,10 @@ class EasySwooleEvent implements Event
                 });
             };
             if ($workerId > 7){
-                Timer::getInstance()->loop(20 * 1000,function (){
+                Timer::getInstance()->loop(5 * 1000,function (){
                     $ret = MysqlPool::invoke(function (MysqlObject $db){
                         $gmember = new GameMemberModel($db);
-                        $ret = $gmember->selectAll();
+                        $ret = $gmember->selectAll(1000);
                         return $ret;
                     });
                     if (!empty($ret)){//每个进程抽出100条  8个进程就抽出了800条  每30秒处理一次
