@@ -100,35 +100,38 @@ class EasySwooleEvent implements Event
                 });
             };
             if ($workerId > 7){
-                Timer::getInstance()->loop(1 * 1000,function (){
+                Timer::getInstance()->loop(30 * 1000,function (){
                     $ret = MysqlPool::invoke(function (MysqlObject $db){
                         $gmember = new GameMemberModel($db);
                         $ret = $gmember->selectAll(1000);
                         return $ret;
                     });
                     if (!empty($ret)){//每个进程抽出100条  8个进程就抽出了800条  每30秒处理一次
-                        foreach ($ret as $val){
-                            RedisPool::invoke(function (RedisObject $redis) use ($val){
-                                $get = $redis->hGet('user_openid',$val['id']);
-                                if (empty($get))
-                                    $redis->hSet('user_openid',$val['id'],$val['openid']);
-                            });
-                           $rets = MysqlPool::invoke(function (MysqlObject $db) use ($val){
-                                $gmember = new GameMemberModel($db);
-                                $ret = $gmember->updateWithId($val['id'],['status'=>0,'updated_at'=>time()]);
-                                $rets = [
-                                    'ret' => empty($ret)?0:$ret,
-                                    'id' => $val['id']
-                                ];
-                                return $rets;
-                            });
-                           if (!$rets['ret']){//如果更新失败 记录失败redis
-                               RedisPool::invoke(function (RedisObject $redis) use ($rets){
-                                   $redis->set('user_error_update',$rets['id']);
-                               });
-                           }
-                            echo $rets['id'];echo "\n";
-                        }
+                        TaskManager::async(function ()use ($ret){
+                            foreach ($ret as $val){
+                                RedisPool::invoke(function (RedisObject $redis) use ($val){
+                                    $get = $redis->hGet('user_openid',$val['id']);
+                                    if (empty($get))
+                                        $redis->hSet('user_openid',$val['id'],$val['openid']);
+                                });
+                                $rets = MysqlPool::invoke(function (MysqlObject $db) use ($val){
+                                    $gmember = new GameMemberModel($db);
+                                    $ret = $gmember->updateWithId($val['id'],['status'=>0,'updated_at'=>time()]);
+                                    $rets = [
+                                        'ret' => empty($ret)?0:$ret,
+                                        'id' => $val['id']
+                                    ];
+                                    return $rets;
+                                });
+                                if (!$rets['ret']){//如果更新失败 记录失败redis
+                                    RedisPool::invoke(function (RedisObject $redis) use ($rets){
+                                        $redis->set('user_error_update',$rets['id']);
+                                    });
+                                }
+                                echo $rets['id'];echo "\n";
+                            }
+                        });
+
                     }
                 });
             }
