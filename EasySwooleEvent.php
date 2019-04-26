@@ -44,7 +44,7 @@ class EasySwooleEvent implements Event
             }
             if ($workerId < 8){
                 //每秒钟运行一次循环  开启一次异步任务   实现100万条记录插入  估计只需要几分钟
-                Timer::getInstance()->loop(1 * 1000,function (){
+                Timer::getInstance()->loop(2 * 1000,function (){
                     for ($i = 0;$i < 50;$i++){
                         $indata = [
                             'nickname'=> 'a'.$i,
